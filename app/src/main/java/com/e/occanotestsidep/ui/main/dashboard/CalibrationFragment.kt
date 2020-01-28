@@ -259,10 +259,6 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 Toast.makeText(context,postMap.toString(),Toast.LENGTH_SHORT).show()
                 return postMap
             }
-
-
-
-
         }
 
         Single.getInstance(this.context).addToRequestQueue(stringRequest)

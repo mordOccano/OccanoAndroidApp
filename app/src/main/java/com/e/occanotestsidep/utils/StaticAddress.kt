@@ -39,6 +39,7 @@ class StaticAddress {
 //
 
 
+        //TODO: set to shared preference
         //max value gauge
         var max_torque_gauge = 400f
         var max_bmep_gauge = 30f

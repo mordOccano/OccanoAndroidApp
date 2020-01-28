@@ -48,13 +48,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:sv_image="@drawable/for_image_speedometer"
-        app:sv_indicator="NeedleIndicator"
-        app:sv_indicatorColor="#A7181870"
-        app:sv_speedTextColor="#050505"
-        app:sv_speedTextPadding="20dp"
+        app:sv_indicator="LineIndicator"
         app:sv_unit="Rpm"
-        app:sv_unitTextColor="#fff"
-        app:sv_unitUnderSpeedText="true" />
+        app:sv_unitUnderSpeedText="true"
+        app:sv_tickNumber="6"
+        app:sv_indicatorColor="#BF00BCD4"
+        app:sv_indicatorWidth="4dp"
+        app:sv_speedTextColor="#B2B9E2"
+        app:sv_speedTextPadding="35dp"
+        app:sv_speedometerColor="#5D6596"
+        app:sv_speedometerWidth="20dp"
+        app:sv_trianglesColor="#BEC0C7"
+        app:sv_unitTextColor="#B0B8D8"/>
 
     <com.kevalpatel2106.rulerpicker.RulerValuePicker
         android:id="@+id/height_ruler_picker"

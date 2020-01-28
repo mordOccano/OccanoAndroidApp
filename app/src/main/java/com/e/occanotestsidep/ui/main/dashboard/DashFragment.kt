@@ -37,7 +37,9 @@ import com.e.occanotestsidep.R
 import com.e.occanotestsidep.persistence.LogRepository
 import com.e.occanotestsidep.utils.Single
 import com.e.occanotestsidep.utils.Utility
+import com.github.anastr.speedviewlib.AwesomeSpeedometer
 import com.github.anastr.speedviewlib.Gauge
+import com.github.anastr.speedviewlib.ImageSpeedometer
 import com.github.anastr.speedviewlib.util.OnPrintTickLabel
 import kotlinx.android.synthetic.main.fragment_calibration_fragment_z.*
 import kotlinx.android.synthetic.main.fragment_launcher.*
@@ -63,7 +65,22 @@ class DashFragment : Fragment() ,View.OnClickListener{
     var injection_timing: Float?=0.0f
     var fuel_flow_rate: Float?=0.0f
 
-    lateinit var torqueGauge: Gauge
+    var torqueGauge: AwesomeSpeedometer? = null
+    var bmepGauge: AwesomeSpeedometer? = null
+    var scaveGauge: AwesomeSpeedometer? = null
+    var imepGauge: AwesomeSpeedometer? = null
+    var breakGauge: AwesomeSpeedometer? = null
+    var injecGauge: AwesomeSpeedometer? = null
+    var rpmGauge: AwesomeSpeedometer? = null
+    var compPresGauge: AwesomeSpeedometer? = null
+    var exsahustGauge: AwesomeSpeedometer? = null
+    var fuelGauge: AwesomeSpeedometer? = null
+    var firingGauge: AwesomeSpeedometer? = null
+    var loadGauge: AwesomeSpeedometer? = null
+
+    var btnDashCurr:ImageButton? = null
+    var btnDasToLog:ImageButton? = null
+    var btnToStatus:ImageButton? = null
 
     lateinit var mLogRepository: LogRepository
     var toastCounter:Boolean = false
@@ -95,84 +112,118 @@ class DashFragment : Fragment() ,View.OnClickListener{
         super.onViewCreated(view, savedInstanceState)
 //        val gaugeOfCalibName = this.gaugeForCalibration.name;
 //        val gaugeOfCalibValue = this.gaugeForCalibration.value;
+
         getAddress()
 
         requestQueue = Volley.newRequestQueue(context)
 
-        setListeners(view)
+        setPointer(view)
+        setListeners()
         getDataFromApi()
 //        forceCalibrationUi(view,gaugeOfCalibValue)
+    }
+
+    private fun setPointer(v:View) {
+        torqueGauge =  AwesomeSpeedometer(context!!)
+        bmepGauge = AwesomeSpeedometer(context!!)
+        scaveGauge = AwesomeSpeedometer(context!!)
+        imepGauge = AwesomeSpeedometer(context!!)
+        breakGauge = AwesomeSpeedometer(context!!)
+        injecGauge = AwesomeSpeedometer(context!!)
+        rpmGauge = AwesomeSpeedometer(context!!)
+        compPresGauge = AwesomeSpeedometer(context!!)
+        exsahustGauge = AwesomeSpeedometer(context!!)
+        fuelGauge = AwesomeSpeedometer(context!!)
+        firingGauge = AwesomeSpeedometer(context!!)
+        loadGauge = AwesomeSpeedometer(context!!)
+
+        torqueGauge = v.findViewById(R.id.torque_gauge)
+        bmepGauge = v.findViewById(R.id.bmep_gauge)
+        breakGauge = v.findViewById(R.id.break_power_gauge)
+        compPresGauge = v.findViewById(R.id.comp_pres_gauge)
+        rpmGauge = v.findViewById(R.id.engine_speed_gauge)
+        exsahustGauge = v.findViewById(R.id.exhaust_gauge)
+        firingGauge = v.findViewById(R.id.firing_pres_gauge)
+        fuelGauge = v.findViewById(R.id.fuel_gauge)
+        imepGauge = v.findViewById(R.id.imep_gauge)
+        injecGauge = v.findViewById(R.id.injec_gauge)
+        loadGauge = v.findViewById(R.id.load_gauge)
+        scaveGauge = v.findViewById(R.id.scave_gauge)
+
+        btnDashCurr = v.findViewById(R.id.btn_dash_current)
+        btnDasToLog = v.findViewById(R.id.btn_dash_to_log)
+        btnToStatus=  v.findViewById(R.id.btn_dash_to_status)
     }
 
     private fun forceCalibrationUi(view: View, value:Float) {
         when (this.gaugeForCalibration.name){
             "torque_gauge"-> {
-               view.findViewById<Gauge>(R.id.torque_gauge).speedTo(value)
+               torqueGauge!!.speedTo(value)
                 return
             }
             "load_gauge"-> {
-                view.findViewById<Gauge>(R.id.load_gauge).speedTo(value)
+                loadGauge!!.speedTo(value)
                 return
             }
             "firing_pres_gauge"-> {
-                view.findViewById<Gauge>(R.id.firing_pres_gauge).speedTo(value)
+                firingGauge!!.speedTo(value)
                 return
 
             }
             "bmep_gauge"-> {
-                view.findViewById<Gauge>(R.id.bmep_gauge).speedTo(value)
+                bmepGauge!!.speedTo(value)
                 return
 
             }
             "break_power_gauge"-> {
-                view.findViewById<Gauge>(R.id.break_power_gauge).speedTo(value)
+                breakGauge!!.speedTo(value)
                 return
 
             }
             "comp_pres_gauge"-> {
-                view.findViewById<Gauge>(R.id.comp_pres_gauge).speedTo(value)
+                compPresGauge!!.speedTo(value)
                 return
 
             }
             "engine_speed_gauge"-> {
-                view.findViewById<Gauge>(R.id.engine_speed_gauge).speedTo(value)
+                rpmGauge!!.speedTo(value)
                 return
 
 
             }
             "exhaust_gauge"-> {
-                view.findViewById<Gauge>(R.id.exhaust_gauge).speedTo(value)
+                exsahustGauge!!.speedTo(value)
                 return
 
 
             }
             "fuel_gauge"-> {
-                view.findViewById<Gauge>(R.id.fuel_gauge).speedTo(value)
+                fuelGauge!!.speedTo(value)
                 return
 
 
             }
             "imep_gauge"-> {
-                view.findViewById<Gauge>(R.id.imep_gauge).speedTo(value)
+                imepGauge!!.speedTo(value)
                 return
 
 
                 //TODO: update the unit
             }
             "injec_gauge"-> {
-                view.findViewById<Gauge>(R.id.injec_gauge).speedTo(value)
+                injecGauge!!.speedTo(value)
                 return
 
 
             }
             "scave_gauge"-> {
-                view.findViewById<Gauge>(R.id.scave_gauge).speedTo(value)
+                scaveGauge!!.speedTo(value)
                 return
 
 
             }
             else -> {
-                view.findViewById<Gauge>(R.id.scave_gauge).speedTo(value)
+                scaveGauge!!.speedTo(value)
                 return
 
 
@@ -184,25 +235,26 @@ class DashFragment : Fragment() ,View.OnClickListener{
     }
 
 
-    private fun setListeners( v :View){
-        v.findViewById<Gauge>(R.id.torque_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.injec_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.bmep_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.break_power_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.comp_pres_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.engine_speed_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.exhaust_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.firing_pres_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.fuel_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.imep_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.load_gauge).setOnClickListener(this)
-        v.findViewById<Gauge>(R.id.scave_gauge).setOnClickListener(this)
+    private fun setListeners(){
+        torqueGauge!!.setOnClickListener(this)
+        injecGauge!!.setOnClickListener(this)
+        bmepGauge!!.setOnClickListener(this)
+        breakGauge!!.setOnClickListener(this)
+        compPresGauge!!.setOnClickListener(this)
+        rpmGauge!!.setOnClickListener(this)
+        exsahustGauge!!.setOnClickListener(this)
+        firingGauge!!.setOnClickListener(this)
+        fuelGauge!!.setOnClickListener(this)
+        imepGauge!!.setOnClickListener(this)
+        loadGauge!!.setOnClickListener(this)
+        scaveGauge!!.setOnClickListener(this)
 
-        setMaxGauges(v)
+        btnDashCurr!!.setOnClickListener(this)
+        btnDasToLog!!.setOnClickListener(this)
+        btnToStatus!!.setOnClickListener(this)
 
-        v.findViewById<ImageButton>(R.id.btn_dash_current).setOnClickListener(this)
-        v.findViewById<ImageButton>(R.id.btn_dash_to_log).setOnClickListener(this)
-        v.findViewById<ImageButton>(R.id.btn_dash_to_status).setOnClickListener(this)
+        setMaxGauges()
+
     }
 
     private fun getDataFromApi() {
@@ -214,30 +266,36 @@ class DashFragment : Fragment() ,View.OnClickListener{
         Run.after(7000,{getDataFromApi()})
     }
 
-    private fun setMaxGauges(v:View) {
-        torqueGauge = v.findViewById(R.id.torque_gauge)
-        torqueGauge.setMaxSpeed(max_torque_gauge)
-        torqueGauge.setStartDegree(0)
+    private fun setMaxGauges() {
+       torqueGauge!!.setMaxSpeed(max_torque_gauge)
+        bmepGauge!!.setMaxSpeed(max_bmep_gauge)
+        breakGauge!!.setMaxSpeed(max_break_power_gauge)
+        compPresGauge!!.setMaxSpeed(max_comp_pres_gauge)
+        rpmGauge!!.setMaxSpeed(max_engine_speed_gauge)
+        exsahustGauge!!.setMaxSpeed(max_exhaust_gauge)
+        firingGauge!!.setMaxSpeed(max_firing_pres_gauge)
+        fuelGauge!!.setMaxSpeed(max_fuel_gauge)
+        imepGauge!!.setMaxSpeed(max_imep_gauge)
+        injecGauge!!.setMaxSpeed(max_injec_gauge)
+        loadGauge!!.setMaxSpeed(max_load_gauge)
+        scaveGauge!!.setMaxSpeed(max_scave_gauge)
 
-//        torqueGauge.onPrintTickLabel = object : OnPrintTickLabel {
-//            fun getTickLabel(tickPosition: Int, tick: Int): CharSequence? {
-//                return if (tick >= 1000) String.format(Locale.getDefault(), "%.1f Km", tick / 1000f) else null
-//                // null means draw default tick label.
-//                // also you can return SpannableString to change color, textSize, lines...
-//            }
-//        }
+        setTicks()
+    }
 
-        v.findViewById<Gauge>(R.id.bmep_gauge).setMaxSpeed(max_bmep_gauge)
-        v.findViewById<Gauge>(R.id.break_power_gauge).setMaxSpeed(max_break_power_gauge)
-        v.findViewById<Gauge>(R.id.comp_pres_gauge).setMaxSpeed(max_comp_pres_gauge)
-        v.findViewById<Gauge>(R.id.engine_speed_gauge).setMaxSpeed(max_engine_speed_gauge)
-        v.findViewById<Gauge>(R.id.exhaust_gauge).setMaxSpeed(max_exhaust_gauge)
-        v.findViewById<Gauge>(R.id.firing_pres_gauge).setMaxSpeed(max_firing_pres_gauge)
-        v.findViewById<Gauge>(R.id.fuel_gauge).setMaxSpeed(max_fuel_gauge)
-        v.findViewById<Gauge>(R.id.imep_gauge).setMaxSpeed(max_imep_gauge)
-        v.findViewById<Gauge>(R.id.injec_gauge).setMaxSpeed(max_injec_gauge)
-        v.findViewById<Gauge>(R.id.load_gauge).setMaxSpeed(max_load_gauge)
-        v.findViewById<Gauge>(R.id.scave_gauge).setMaxSpeed(max_scave_gauge)
+    private fun setTicks() {
+        torqueGauge!!.tickNumber=9
+        bmepGauge!!.tickNumber=9
+        breakGauge!!.tickNumber=9
+        compPresGauge!!.tickNumber=9
+        rpmGauge!!.tickNumber=9
+        exsahustGauge!!.tickNumber=9
+        firingGauge!!.tickNumber=9
+        fuelGauge!!.tickNumber=9
+        imepGauge!!.tickNumber=9
+        injecGauge!!.tickNumber=9
+        loadGauge!!.tickNumber=9
+        scaveGauge!!.tickNumber=9
     }
 
     private fun newJsonParse() {
@@ -273,7 +331,7 @@ class DashFragment : Fragment() ,View.OnClickListener{
                 saveToLog(mLog)
 
 
-                setGauges(viewc)
+                setGauges()
             },
             Response.ErrorListener { error ->
 
@@ -338,20 +396,19 @@ class DashFragment : Fragment() ,View.OnClickListener{
 //        Single.getInstance().
 //    }
 
-    fun setGauges(v: View) {
-
-        v.findViewById<Gauge>(R.id.torque_gauge).speedTo(torque_engine!!)
-        v.findViewById<Gauge>(R.id.bmep_gauge).speedTo(bmep!!)
-        v.findViewById<Gauge>(R.id.break_power_gauge).speedTo(break_power!!)
-        v.findViewById<Gauge>(R.id.comp_pres_gauge).speedTo(compression_pressure!!)
-        v.findViewById<Gauge>(R.id.engine_speed_gauge).speedTo(engine_speed!!)
-        v.findViewById<Gauge>(R.id.exhaust_gauge).speedTo(exhaust_temperature!!)
-        v.findViewById<Gauge>(R.id.firing_pres_gauge).speedTo(firing_pressure!!)
-        v.findViewById<Gauge>(R.id.fuel_gauge).speedTo(fuel_flow_rate!!)
-        v.findViewById<Gauge>(R.id.imep_gauge).speedTo(imep!!)
-        v.findViewById<Gauge>(R.id.injec_gauge).speedTo(injection_timing!!)
-        v.findViewById<Gauge>(R.id.load_gauge).speedTo(load!!)
-        v.findViewById<Gauge>(R.id.scave_gauge).speedTo(scavenging_pressure!!)
+    fun setGauges() {
+        torqueGauge?.speedTo(torque_engine!!)
+        bmepGauge?.speedTo(bmep!!)
+        breakGauge?.speedTo(break_power!!)
+        compPresGauge?.speedTo(compression_pressure!!)
+        rpmGauge?.speedTo(engine_speed!!)
+        exsahustGauge?.speedTo(exhaust_temperature!!)
+        firingGauge?.speedTo(firing_pressure!!)
+        fuelGauge?.speedTo(fuel_flow_rate!!)
+        imepGauge?.speedTo(imep!!)
+        injecGauge?.speedTo(injection_timing!!)
+        loadGauge?.speedTo(load!!)
+        scaveGauge?.speedTo(scavenging_pressure!!)
     }
 
 

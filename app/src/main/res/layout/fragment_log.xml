@@ -182,7 +182,7 @@
                 android:id="@+id/iv_valid_db"
                 android:layout_width="115dp"
                 android:layout_height="95dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
                 app:layout_constraintEnd_toStartOf="@+id/guideline9"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_db_log"
@@ -193,7 +193,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="248dp" />
+                app:layout_constraintGuide_percent="0.67" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline9"
@@ -206,7 +206,7 @@
                 android:id="@+id/iv_valid_ir"
                 android:layout_width="115dp"
                 android:layout_height="95dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline8"
                 app:layout_constraintTop_toBottomOf="@+id/tv_ir_log"
@@ -216,7 +216,7 @@
                 android:id="@+id/iv_valid_dashboard"
                 android:layout_width="115dp"
                 android:layout_height="95dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
                 app:layout_constraintEnd_toStartOf="@+id/guideline8"
                 app:layout_constraintStart_toStartOf="@+id/guideline9"
                 app:srcCompat="@drawable/ic_check_black_24dp" />
@@ -225,12 +225,58 @@
                 android:id="@+id/tv_valid_dashboard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dashboard"
+                android:text="dashboard update"
+                android:ems="6"
+                android:gravity="center"
                 android:textColor="@color/colorOccanoText"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/iv_valid_dashboard"
                 app:layout_constraintEnd_toStartOf="@+id/guideline8"
                 app:layout_constraintStart_toStartOf="@+id/guideline9" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9">
+
+                <ImageButton
+                    android:id="@+id/restart_korti"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_power_settings_new_black_24dp" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/iv_valid_mics"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline8"
+                app:layout_constraintTop_toBottomOf="@+id/iv_valid_ir"
+                app:srcCompat="@drawable/ic_close_black_24dp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mics"
+                android:textColor="@color/colorText"
+                app:layout_constraintBottom_toTopOf="@+id/iv_valid_mics"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline8"
+                app:layout_constraintTop_toBottomOf="@+id/iv_valid_ir" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

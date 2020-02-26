@@ -63,7 +63,7 @@
 
     <EditText
         android:id="@+id/et_set_ip"
-        android:layout_width="130dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@color/colorbackgroundWhite"

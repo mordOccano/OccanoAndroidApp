@@ -6,18 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.e.occanosidetest.models.GaugeForCalibration
-import com.e.occanosidetest.utils.Run
 import com.e.occanosidetest.utils.StaticAddress
 import com.e.occanotestsidep.R
 import com.e.occanotestsidep.utils.Single
+import com.github.anastr.speedviewlib.AwesomeSpeedometer
 import com.kevalpatel2106.rulerpicker.RulerValuePicker
 import com.kevalpatel2106.rulerpicker.RulerValuePickerListener
 import kotlinx.android.synthetic.main.fragment_calibration_fragment_z.*
@@ -27,12 +27,6 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
     lateinit var gaugeForCalibration: GaugeForCalibration
     lateinit var rulerValuePicker: RulerValuePicker
     private var ip:String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        gaugeForCalibration = arguments!!.getParcelable("gauge_from_dashboard")!!
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,17 +39,38 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initValue()
+        setListeners()
         getAddress()
-        val gaugeOfCalibName = this.gaugeForCalibration.name;
-        val gaugeOfCalibValue = this.gaugeForCalibration.value;
-        rulerValuePicker = view.findViewById(R.id.height_ruler_picker)
-        rulerValuePicker.setMinMaxValue(0,100)
-
-        setTvValue()
-
-        view.findViewById<ImageButton>(R.id.send_data_to_calibration).setOnClickListener(this)
-
+        getGaugeToCalib()
+        initUI()
+        setGauges()
         litenToRule()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initValue()
+        initUI()
+        setGauges()
+    }
+
+    private fun setListeners() {
+        view!!.findViewById<ImageButton>(R.id.send_data_to_calibration).setOnClickListener(this)
+        view!!.findViewById<ImageButton>(R.id.btn_calib_to_dash).setOnClickListener(this)
+        view!!.findViewById<ImageButton>(R.id.send_data_to_calibration).isClickable = false    }
+
+    private fun initValue() {
+        gaugeForCalibration = GaugeForCalibration()
+        getGaugeToCalib()
+        calib_d_gauge_name.text = gaugeForCalibration.name
+    }
+
+    private fun initUI(){
+        rulerValuePicker = view!!.findViewById(R.id.height_ruler_picker)
+        rulerValuePicker.setMinMaxValue(0,100)
+        view!!.findViewById<TextView>(R.id.tv_num_data_to_calibrate).text = gaugeForCalibration.value.toString()
+        view!!.findViewById<AwesomeSpeedometer>(R.id.calib_gauge).speedTo(tv_num_data_to_calibrate.text.toString().toFloat())
 
     }
 
@@ -77,9 +92,8 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
         })
     }
 
-    private fun setTvValue() {
-        tv_num_data_to_calibrate.text = gaugeForCalibration.name
-        calib_gauge.speedTo(this.gaugeForCalibration.value)
+    private fun setGauges() {
+//        calib_gauge.speedTo(this.gaugeForCalibration.value)
 //        setGaugeCali()
 
         when (this.gaugeForCalibration.name){
@@ -89,7 +103,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_d_gauge_name.text = "torque"
                 calib_gauge.setUnit("KN/m")
                 calib_gauge.setMaxSpeed(StaticAddress.max_torque_gauge)
-                return
+//                return
             }
             "load_gauge"-> {
                 calib_d_gauge_name.text = "load"
@@ -97,7 +111,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_load_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_load_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
             }
             "firing_pres_gauge"-> {
                 calib_d_gauge_name.text = "firing pressure"
@@ -105,7 +119,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_firing_pres_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_firing_pres_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
             }
             "bmep_gauge"-> {
@@ -114,7 +128,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_bmep_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_bmep_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
             }
             "break_power_gauge"-> {
@@ -123,7 +137,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_break_power_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_break_power_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
             }
             "comp_pres_gauge"-> {
@@ -132,7 +146,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_comp_pres_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_comp_pres_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
             }
             "engine_speed_gauge"-> {
@@ -142,7 +156,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 //
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_engine_speed_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
             }
@@ -152,7 +166,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_exhaust_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_exhaust_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
             }
@@ -162,7 +176,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_fuel_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_fuel_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
             }
@@ -172,7 +186,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_imep_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_imep_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
                 //TODO: update the unit
@@ -184,7 +198,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.trembleDegree = 0.01f
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_injec_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
             }
@@ -194,7 +208,7 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(StaticAddress.max_scave_gauge)
                 rulerValuePicker.setMinMaxValue(0, StaticAddress.max_scave_gauge.toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
             }
@@ -204,43 +218,57 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 calib_gauge.setMaxSpeed(this.gaugeForCalibration.value*2)
                 rulerValuePicker.setMinMaxValue(0,(this.gaugeForCalibration.value*2).toInt())
                 rulerValuePicker.selectValue(this.gaugeForCalibration.value.toInt())
-                return
+//                return
 
 
             }
 
-
         }
+        calib_gauge.tickNumber = 9
     }
 
     override fun onClick(v: View?) {
         when (v!!.id){
             R.id.send_data_to_calibration -> {
-                submit()
+                sendDataForCalib()
                 Toast.makeText(this.context,"manual correction sent", Toast.LENGTH_SHORT).show()
 
+                if (findNavController().currentDestination?.id == R.id.calibrationFragmentZ) {
+                    findNavController().navigate(R.id.action_calibrationFragmentZ_to_dashFragment)}
+                else if (findNavController().currentDestination?.id==R.id.subDadhboardContainer){
+                    findNavController().navigate(R.id.action_subDadhboardContainer_to_dashFragment)
+                }
 //                var gauge = GaugeForCalibration(
 //                    this.gaugeForCalibration.name,
 //                    tv_num_data_to_calibrate.text.toString().toFloat()
 //                )
 //                val bundle = bundleOf("gauge_from_manual" to gauge)
-                findNavController().navigate(R.id.action_calibrationFragmentZ_to_dashFragment
-//                    ,bundle
-                )
+//                findNavController().navigate(R.id.action_calibrationFragmentZ_to_subDadhboardContainer
+////                    ,bundle
+//                )
+
+
+            }
+
+            R.id.btn_calib_to_dash -> {
+                if (findNavController().currentDestination?.id == R.id.calibrationFragmentZ) {
+                    findNavController().navigate(R.id.action_calibrationFragmentZ_to_dashFragment)}
+                else if (findNavController().currentDestination?.id==R.id.subDadhboardContainer){
+                    findNavController().navigate(R.id.action_subDadhboardContainer_to_dashFragment)
+                }
             }
 
             else-> Toast.makeText(this.context,"clicked", Toast.LENGTH_SHORT).show()
 
-        }    }
+        }
+    }
 
-    fun submit(){
-//        val requestUrl = URL_OCCANO_CALIBRATION
-//
+    fun sendDataForCalib(){
         val requestUrl = "http://"+ip+"/manual_correction/"
         val stringRequest: StringRequest = object : StringRequest(
             Method.POST,
             requestUrl,
-            Response.Listener { response ->
+            Response.Listener { _ ->
                 //                    Log.e(
 //                        "Volley Result",
 //                        "" + response
@@ -255,19 +283,12 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
                 postMap["viewed_field"] = gaugeForCalibration.name
                 postMap["viewed_value"] = gaugeForCalibration.value.toString()
                 postMap["manual_corrected_value"] = tv_num_data_to_calibrate.text.toString()
-
-                Toast.makeText(context,postMap.toString(),Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context,postMap.toString(),Toast.LENGTH_SHORT).show()
                 return postMap
             }
         }
-
         Single.getInstance(this.context).addToRequestQueue(stringRequest)
-
-
-//        }
-//make the request to your server as indicated in your request url
-        //make the request to your server as indicated in your request url
-
+        saveCalibToSharedPref()
     }
 
     fun getAddress(){
@@ -275,5 +296,32 @@ class CalibrationFragment :Fragment(),View.OnClickListener{
         val defaultValue = resources.getString(R.string.default_ip)
         ip = sharedPref.getString("ip", defaultValue)
     }
+
+    fun getGaugeToCalib(){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        var defaultName = "scave_gauge"
+        var defaultValue = 0.0f
+        gaugeForCalibration.name = sharedPref.getString("nameOfGaugeFromdash", defaultName).toString()
+        gaugeForCalibration.value = sharedPref.getFloat("valueOfGaugeFromdash",defaultValue)
+    }
+
+    fun saveCalibToSharedPref(){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            val defaultValue = if (!tv_num_data_to_calibrate.text.toString().isEmpty()){
+                tv_num_data_to_calibrate.text.toString().toFloat()
+            }
+            else if (!tv_num_data_to_calibrate.text.toString().toFloat().isNaN()){
+                tv_num_data_to_calibrate.text.toString().toFloat()
+            }
+            else{
+                0.0f
+            }
+            putFloat("valueFromCalib", defaultValue)
+            putString("nameOfGaugeFromCalib", gaugeForCalibration.name)
+            commit()
+        }
+    }
+
 
 }

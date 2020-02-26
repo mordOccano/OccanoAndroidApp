@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.main.dashboard.GraphsFragment"
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/graphs_header_cardv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:fadingEdge="horizontal|vertical"
+        android:focusable="auto"
+        android:layoutMode="clipBounds"
+        app:cardBackgroundColor="@color/colorItemBackFalse"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toTopOf="@id/guideline14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/graphs_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="Graphs"
+                android:textColor="@color/colorText"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btn_graph_to_dash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/ic_keyboard_backspace_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Back To Dashboard"
+                android:ems="6"
+                android:textColor="@color/colorText"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_graph_to_dash"
+                app:layout_constraintStart_toEndOf="@+id/btn_graph_to_dash"
+                app:layout_constraintTop_toTopOf="@+id/btn_graph_to_dash" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/torque_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/scave_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/bmep_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/imep_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/break_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/comp_pres_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/rpm_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/injec_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/exshaust_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/firing_pres_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/fuel_graph" />
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="visible"
+        android:id="@+id/load_graph" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

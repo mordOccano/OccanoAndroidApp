@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
@@ -20,7 +20,18 @@ import com.android.volley.toolbox.Volley
 import com.e.occanosidetest.models.GaugeForCalibration
 import com.e.occanosidetest.models.Log
 import com.e.occanosidetest.utils.Run
-import com.e.occanosidetest.utils.StaticAddress
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_bmep_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_break_power_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_comp_pres_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_engine_speed_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_exhaust_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_firing_pres_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_fuel_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_imep_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_injec_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_load_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_scave_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.calib_torque_gauge
 import com.e.occanosidetest.utils.StaticAddress.Companion.max_bmep_gauge
 import com.e.occanosidetest.utils.StaticAddress.Companion.max_break_power_gauge
 import com.e.occanosidetest.utils.StaticAddress.Companion.max_comp_pres_gauge
@@ -33,37 +44,79 @@ import com.e.occanosidetest.utils.StaticAddress.Companion.max_injec_gauge
 import com.e.occanosidetest.utils.StaticAddress.Companion.max_load_gauge
 import com.e.occanosidetest.utils.StaticAddress.Companion.max_scave_gauge
 import com.e.occanosidetest.utils.StaticAddress.Companion.max_torque_gauge
+import com.e.occanosidetest.utils.StaticAddress.Companion.bmep_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.bool_ir_recv
+import com.e.occanosidetest.utils.StaticAddress.Companion.bool_mics_recv
+import com.e.occanosidetest.utils.StaticAddress.Companion.break_power_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.compression_pressure_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.counter_compare_to_local
+import com.e.occanosidetest.utils.StaticAddress.Companion.exshaust_temperature_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.firing_pressure_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.fuel_flow_rate_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.imep_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.injection_timing_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.load_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.local_ir_recv_tester_previous
+import com.e.occanosidetest.utils.StaticAddress.Companion.local_mics_recv_previous
+import com.e.occanosidetest.utils.StaticAddress.Companion.rpm_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.scavenging_pressure_bool_calib
+import com.e.occanosidetest.utils.StaticAddress.Companion.sec_bool_counter_compare_to_local
+import com.e.occanosidetest.utils.StaticAddress.Companion.torque_engine_bool_calib
 import com.e.occanotestsidep.R
 import com.e.occanotestsidep.persistence.LogRepository
+import com.e.occanotestsidep.ui.models.Ship
 import com.e.occanotestsidep.utils.Single
 import com.e.occanotestsidep.utils.Utility
 import com.github.anastr.speedviewlib.AwesomeSpeedometer
-import com.github.anastr.speedviewlib.Gauge
-import com.github.anastr.speedviewlib.ImageSpeedometer
-import com.github.anastr.speedviewlib.util.OnPrintTickLabel
-import kotlinx.android.synthetic.main.fragment_calibration_fragment_z.*
-import kotlinx.android.synthetic.main.fragment_launcher.*
-import java.util.*
-
+import kotlin.Error
 
 class DashFragment : Fragment() ,View.OnClickListener{
 
-    private var ip: String? = null
     lateinit var gaugeForCalibration: GaugeForCalibration
     lateinit var stringRequest: StringRequest
     lateinit var requestQueue: RequestQueue
-    var engine_speed: Float?=0.0f
-    var exhaust_temperature: Float?=0.0f
-    var load: Float?=0.0f
-    var firing_pressure: Float?=0.0f
-    var scavenging_pressure: Float?=0.0f
-    var compression_pressure: Float?=0.0f
-    var break_power: Float?=0.0f
-    var imep: Float?=0.0f
-    var torque_engine: Float?=0.0f
-    var bmep: Float?=0.0f
-    var injection_timing: Float?=0.0f
-    var fuel_flow_rate: Float?=0.0f
+    private var api_rpm: Float?=0.0f
+    private var api_exhaust_temperature: Float?=0.0f
+    private var api_load: Float?=0.0f
+    private var api_firing_pressure: Float?=0.0f
+    private var api_scavenging_pressure: Float?=0.0f
+    private var api_compression_pressure: Float?=0.0f
+    private var api_break_power: Float?=0.0f
+    private var api_imep: Float?=0.0f
+    private var api_torque_engine: Float?=0.0f
+    private var api_bmep: Float?=0.0f
+    private var api_injection_timing: Float?=0.0f
+    private var api_fuel_flow_rate: Float?=0.0f
+
+    private var total_rpm: Float?=0.0f
+    private var total_exhaust_temperature: Float?=0.0f
+    private var total_load: Float?=0.0f
+    private var total_firing_pressure: Float?=0.0f
+    private var total_scavenging_pressure: Float?=0.0f
+    private var total_compression_pressure: Float?=0.0f
+    private var total_break_power: Float?=0.0f
+    private var total_imep: Float?=0.0f
+    private var total_torque_engine: Float?=0.0f
+    private var total_bmep: Float?=0.0f
+    private var total_injection_timing: Float?=0.0f
+    private var total_fuel_flow_rate: Float?=0.0f
+
+    var time_passed: Long? = 0
+    var api_mics_recv: String? = ""
+    var api_ir_recv: String? = ""
+
+    var ip: String? = null
+    var fromCalibName: String? = ""
+    var fromCalibValue:Float = 0.0f
+    var currentShip = Ship()
+
+
+//    private val selectedPressureUnits = false
+//private var celsiusTempUnit: Boolean = false
+
+    private var counterForSaveToLog:Int = 0
+    var toastCounter:Boolean = false
+
 
     var torqueGauge: AwesomeSpeedometer? = null
     var bmepGauge: AwesomeSpeedometer? = null
@@ -78,52 +131,52 @@ class DashFragment : Fragment() ,View.OnClickListener{
     var firingGauge: AwesomeSpeedometer? = null
     var loadGauge: AwesomeSpeedometer? = null
 
+    var gauge = GaugeForCalibration()
+
     var btnDashCurr:ImageButton? = null
     var btnDasToLog:ImageButton? = null
     var btnToStatus:ImageButton? = null
 
+    //repo
     lateinit var mLogRepository: LogRepository
-    var toastCounter:Boolean = false
-
-    var time_passed:Long? = 0
-
-    lateinit var viewc :View
 
     private val TAG = "DashboardFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLogRepository = LogRepository(context)
-
-//        gaugeForCalibration = arguments?.getParcelable("gauge_from_manual")!!
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        viewc = inflater.inflate(R.layout.fragment_dash, container, false)
-        return viewc
-    }
-
+    ): View? =// Inflate the layout for this fragment
+        inflater.inflate(R.layout.fragment_dash, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val gaugeOfCalibName = this.gaugeForCalibration.name;
-//        val gaugeOfCalibValue = this.gaugeForCalibration.value;
 
+        setUI(view)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setUI(view!!)
+    }
+
+    fun setUI(v:View){
         getAddress()
-
+        getShipPropreties()
         requestQueue = Volley.newRequestQueue(context)
-
-        setPointer(view)
+        setPointer(v)
         setListeners()
         getDataFromApi()
-//        forceCalibrationUi(view,gaugeOfCalibValue)
     }
 
     private fun setPointer(v:View) {
+
+        //gauges pointers and init
         torqueGauge =  AwesomeSpeedometer(context!!)
         bmepGauge = AwesomeSpeedometer(context!!)
         scaveGauge = AwesomeSpeedometer(context!!)
@@ -150,91 +203,15 @@ class DashFragment : Fragment() ,View.OnClickListener{
         loadGauge = v.findViewById(R.id.load_gauge)
         scaveGauge = v.findViewById(R.id.scave_gauge)
 
+        //pointers for buttons
         btnDashCurr = v.findViewById(R.id.btn_dash_current)
         btnDasToLog = v.findViewById(R.id.btn_dash_to_log)
-        btnToStatus=  v.findViewById(R.id.btn_dash_to_status)
-    }
+        btnToStatus = v.findViewById(R.id.btn_dash_to_status)
 
-    private fun forceCalibrationUi(view: View, value:Float) {
-        when (this.gaugeForCalibration.name){
-            "torque_gauge"-> {
-               torqueGauge!!.speedTo(value)
-                return
-            }
-            "load_gauge"-> {
-                loadGauge!!.speedTo(value)
-                return
-            }
-            "firing_pres_gauge"-> {
-                firingGauge!!.speedTo(value)
-                return
-
-            }
-            "bmep_gauge"-> {
-                bmepGauge!!.speedTo(value)
-                return
-
-            }
-            "break_power_gauge"-> {
-                breakGauge!!.speedTo(value)
-                return
-
-            }
-            "comp_pres_gauge"-> {
-                compPresGauge!!.speedTo(value)
-                return
-
-            }
-            "engine_speed_gauge"-> {
-                rpmGauge!!.speedTo(value)
-                return
-
-
-            }
-            "exhaust_gauge"-> {
-                exsahustGauge!!.speedTo(value)
-                return
-
-
-            }
-            "fuel_gauge"-> {
-                fuelGauge!!.speedTo(value)
-                return
-
-
-            }
-            "imep_gauge"-> {
-                imepGauge!!.speedTo(value)
-                return
-
-
-                //TODO: update the unit
-            }
-            "injec_gauge"-> {
-                injecGauge!!.speedTo(value)
-                return
-
-
-            }
-            "scave_gauge"-> {
-                scaveGauge!!.speedTo(value)
-                return
-
-
-            }
-            else -> {
-                scaveGauge!!.speedTo(value)
-                return
-
-
-            }
-
-
-        }
+        v.findViewById<TextView>(R.id.tv_current_ship_name).text = currentShip.vessel.toString()
+        v.findViewById<TextView>(R.id.tv_current_ship_engine).text = currentShip.m_e.toString()
 
     }
-
-
     private fun setListeners(){
         torqueGauge!!.setOnClickListener(this)
         injecGauge!!.setOnClickListener(this)
@@ -248,7 +225,6 @@ class DashFragment : Fragment() ,View.OnClickListener{
         imepGauge!!.setOnClickListener(this)
         loadGauge!!.setOnClickListener(this)
         scaveGauge!!.setOnClickListener(this)
-
         btnDashCurr!!.setOnClickListener(this)
         btnDasToLog!!.setOnClickListener(this)
         btnToStatus!!.setOnClickListener(this)
@@ -256,16 +232,13 @@ class DashFragment : Fragment() ,View.OnClickListener{
         setMaxGauges()
 
     }
-
     private fun getDataFromApi() {
         newJsonParse()
         repeatGetData()
     }
-
     private fun repeatGetData() {
         Run.after(7000,{getDataFromApi()})
     }
-
     private fun setMaxGauges() {
        torqueGauge!!.setMaxSpeed(max_torque_gauge)
         bmepGauge!!.setMaxSpeed(max_bmep_gauge)
@@ -282,7 +255,6 @@ class DashFragment : Fragment() ,View.OnClickListener{
 
         setTicks()
     }
-
     private fun setTicks() {
         torqueGauge!!.tickNumber=9
         bmepGauge!!.tickNumber=9
@@ -297,290 +269,443 @@ class DashFragment : Fragment() ,View.OnClickListener{
         loadGauge!!.tickNumber=9
         scaveGauge!!.tickNumber=9
     }
-
     private fun newJsonParse() {
 
         val url  = "http://"+ip+"/report/"
-
-        val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
-                android.util.Log.d(TAG,"Response: %s".format(response.toString()))
-
-//                 Toast.makeText(context,"Response: %s".format(response.toString()),Toast.LENGTH_SHORT).show()
-
-
-                val item = response.getJSONObject("analysis")
-                engine_speed = item.getDouble("engine_speed").toFloat()
-                exhaust_temperature = item.getDouble("exhaust_temperature").toFloat()
-                load = item.getDouble("load").toFloat()
-                firing_pressure = item.getDouble("firing_pressure").toFloat()
-                scavenging_pressure = item.getDouble("scavenging_pressure").toFloat()
-                compression_pressure = item.getDouble("compression_pressure").toFloat()
-                break_power = item.getDouble("break_power").toFloat()
-                imep = item.getDouble("imep").toFloat()
-                torque_engine = item.getDouble("Torque_engine").toFloat()/1000
-                bmep = item.getDouble("bmep").toFloat()
-                injection_timing = item.getDouble("injection_timing").toFloat()
-                fuel_flow_rate = item.getDouble("fuel_flow_rate").toFloat()
-
-
-
-                val mLog = Log()
-                mLog.content = "Response: %s".format(response.toString())+Utility.getCurrentTimeStamp()
-                saveToLog(mLog)
-
-
-                setGauges()
-            },
-            Response.ErrorListener { error ->
-
-                if(error != null && error.message != null)
-                {
-
-//                    Log.d(TAG, "onResponse: Faild beacause: %s".format(error.toString()))
-//                    tv_dash_log.text = "onResponse: Faild beacause: %s".format(error.toString())
-                    if (toastCounter == false){
-                        if (context !=null){
-                            Toast.makeText(context,"הי מתוק!! יש בעיה. עבור אל מסך הלוג ותיצור איתי קשר - מרדכי",Toast.LENGTH_SHORT).show()
-                        }
-                        toastCounter=true
-                    }
+        try {
+            val jsonObjectRequest = JsonObjectRequest(
+                Request.Method.GET, url, null,
+                Response.Listener { response ->
+                    android.util.Log.d(TAG,"Response: %s".format(response.toString()))
                     val mLog = Log()
-                    mLog.content = "Response: %s".format(error.toString())
+                    mLog.content = "Response: %s".format(response.toString())+Utility.getCurrentTimeStamp()
                     saveToLog(mLog)
 
+
+                    val item= response.getJSONObject("analysis")
+                    api_rpm = item.getDouble("engine_speed").toFloat()
+                    api_exhaust_temperature = item.getDouble("exhaust_temperature").toFloat()
+                    api_load = item.getDouble("load").toFloat()
+                    api_firing_pressure = item.getDouble("firing_pressure").toFloat()
+                    api_scavenging_pressure = item.getDouble("scavenging_pressure").toFloat()
+                    api_compression_pressure = item.getDouble("compression_pressure").toFloat()
+                    api_break_power = item.getDouble("break_power").toFloat()
+                    api_imep = item.getDouble("imep").toFloat()
+                    api_torque_engine = item.getDouble("Torque_engine").toFloat()/1000
+                    api_bmep = item.getDouble("bmep").toFloat()
+                    api_injection_timing = item.getDouble("injection_timing").toFloat()
+                    api_fuel_flow_rate = item.getDouble("fuel_flow_rate").toFloat()
+
+                    try {
+                         time_passed = if(response.getString("time_passed")=="null"){0}else{response.getString("time_passed").toLong()}
+                        setValidDasboardUi(time_passed!!)
+//                        Toast.makeText(this.context,time_passed.toString(),Toast.LENGTH_SHORT).show()
+                        }catch (e:Error){
+                        e.printStackTrace()
+                    }
+
+                    try {
+                        val meta_data_item = response.getJSONObject("metadata")
+                        this.api_ir_recv = meta_data_item.getString("ir_recv")
+                        this.api_mics_recv = meta_data_item.getString("mics_recv")
+//                        checkSensors(this.api_ir_recv!!, this.api_mics_recv!!)
+                    }
+                    catch (e:Error){
+                        e.printStackTrace()
+                    }
+//                    setGraph()
+                },
+                Response.ErrorListener { error ->
+
+                    if(error != null && error.message != null)
+                    {
+                        if (toastCounter == false){
+                            if (context !=null){
+                                Toast.makeText(context,"הי מתוק!! יש בעיה. עבור אל מסך הלוג ותיצור איתי קשר - מרדכי",Toast.LENGTH_SHORT).show()
+                            }
+                            toastCounter=true
+                        }
+                        val mLog = Log()
+                        mLog.content = "Response: %s".format(error.toString())
+                        saveToLog(mLog)
+                    }
                 }
-//                else if (error.networkResponse.statusCode == 404){
-////                    findNavController().navigate(R.id.action_dashFragment_to_launcherFragment)
-//
-//
-////                    var timeErrorPassed = error.networkResponse.data
-//                    Toast.makeText(this.context,"404",Toast.LENGTH_SHORT).show()
-//
-//                }
-//                else if (error is TimeoutError ) {
-//                    Toast.makeText(this.context,"please connect to corti",Toast.LENGTH_LONG).show()
-////                    findNavController().navigate(R.id.action_dashFragment_to_launcherFragment)
-//                }
+            )
+            Single.getInstance(this.context).addToRequestQueue(jsonObjectRequest)
+        }
+        catch (e : Error){
+            e.printStackTrace()
+        }
 
-
-//                Log.d(TAG, "onResponse: Faild beacause: %s".format(error.toString()))
-//                tv_dash_log.text = "onResponse: Faild beacause: %s".format(error.toString())
-
-            }
-
-        )
-
-// Access the RequestQueue through your singleton class.
-        Single.getInstance(this.context).addToRequestQueue(jsonObjectRequest)
+        getPropertiesFromCalib()
+        setGauges()
 
     }
 
+    private fun setValidDasboardUi(timePassed: Long) {
+        if (timePassed<900000){
+            val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+            with (sharedPref.edit()) {
+                putBoolean("algo_time_passed", true)
+                commit()
+            }
+        }
+        else{
+            val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+            with (sharedPref.edit()) {
+                putBoolean("algo_time_passed", false)
+                commit()
+            }
+
+        }
+    }
+
+    fun checkSensors(api_mic:String, api_ir:String){
+
+        if (sec_bool_counter_compare_to_local){
+            local_ir_recv_tester_previous = api_ir_recv.toString()
+            local_mics_recv_previous = api_mics_recv.toString()
+            sec_bool_counter_compare_to_local = false
+        }
+
+        counter_compare_to_local++
+        if (counter_compare_to_local>7){
+            bool_ir_recv = api_ir == local_ir_recv_tester_previous
+            local_ir_recv_tester_previous = api_ir
+            bool_mics_recv = api_mic==local_mics_recv_previous
+            local_mics_recv_previous = api_mic
+        }
+
+//            saveSensorsToPrefs()
+//        if (local_ir_recv == ""){
+//            local_ir_recv = api_ir_recv.toString()
+//        }
+//        if(local_mics_recv == ""){
+//            local_mics_recv = api_mics_recv.toString()
+//        }
+
+//        counter_compare_to_local++
+//       if (counter_compare_to_local>4){
+//           bool_ir_recv = api_ir_recv.equals(local_ir_recv)
+//           bool_mics_recv = api_mics_recv.equals(local_mics_recv)
+           saveSensorsToPrefs()
+            Toast.makeText(context, bool_ir_recv.toString()+bool_mics_recv.toString(),Toast.LENGTH_SHORT).show()
+//       }
+    }
+
+    private fun saveSensorsToPrefs() {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putBoolean("algo_ir_valid", bool_ir_recv)
+            putBoolean("algo_mics_valid", bool_mics_recv)
+            commit()
+        }
+//        counter_compare_to_local = 0
+
+    }
+
+    // TODO: refactoring.
+//    boolean readedPressureUnits = sharedPreferences.getBoolean("selectPressureUnit", true);  //true = bar, false = psi
+//    if (readedPressureUnits != selectedPressureUnits) {
+//        selectedPressureUnits = readedPressureUnits;
+//        pressureFactor = selectedPressureUnits ? 1 : (float) 14.5037738;
+//        pressureUnit = selectedPressureUnits ? "bar" : "psi";
+//        pressureMin = selectedPressureUnits ? -3 : -30;
+//        pressureMax = selectedPressureUnits ? 3 : 30;
+//    }
+//
+//    boolean readedTempUnit = sharedPreferences.getBoolean("selectTemperatureUnit", true);  //true = celcius, false = fahrenheit
+//    if (readedTempUnit != celsiusTempUnit) {
+//        celsiusTempUnit = readedTempUnit;
+//        temperatureUnit = getString(celsiusTempUnit ? R.string.unit_c : R.string.unit_f);
+//    }
+//
+//    boolean readedPowerUnits = sharedPreferences.getBoolean("selectPowerUnit", true);  //true = kw, false = ps
+//    if (powerUnits == null || readedPowerUnits != powerUnits) {
+//        powerUnits = readedPowerUnits;
+//        powerFactor = powerUnits ? 1 : 1.35962f;
+//    }
 
 
     private fun saveToLog(log: Log) {
-//        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-//        with (sharedPref.edit()) {
-//            putString("log", s)
-//            commit()
-//        }
+        //in order to save ~
+        counterForSaveToLog ++
+        if (counterForSaveToLog > 9){
             this.mLogRepository.insertLogTask(log)
-//        Toast.makeText(context,"done",Toast.LENGTH_SHORT).show()
-
+            counterForSaveToLog = 0
+        }
+//        Toast.makeText(context,counterForSaveToLog.toString(),Toast.LENGTH_SHORT).show()
     }
 
-//pause the request on pause the fragment
+//TODO: refactoring.
+//pause the request on pause the fragment ->
 //    override fun onPause() {
 //        super.onPause()
 //        Single.getInstance().
 //    }
 
     fun setGauges() {
-        torqueGauge?.speedTo(torque_engine!!)
-        bmepGauge?.speedTo(bmep!!)
-        breakGauge?.speedTo(break_power!!)
-        compPresGauge?.speedTo(compression_pressure!!)
-        rpmGauge?.speedTo(engine_speed!!)
-        exsahustGauge?.speedTo(exhaust_temperature!!)
-        firingGauge?.speedTo(firing_pressure!!)
-        fuelGauge?.speedTo(fuel_flow_rate!!)
-        imepGauge?.speedTo(imep!!)
-        injecGauge?.speedTo(injection_timing!!)
-        loadGauge?.speedTo(load!!)
-        scaveGauge?.speedTo(scavenging_pressure!!)
-    }
+        //import from shared pref the valur from calibrate and equal to the current value
+        total_torque_engine = if (torque_engine_bool_calib!!){
+            api_torque_engine
+        } else{
+            calib_torque_gauge
+        }
 
+        total_bmep = if (bmep_bool_calib!!){
+            api_bmep
+        } else{
+            calib_bmep_gauge
+        }
+
+        total_break_power = if (break_power_bool_calib!!){
+            api_break_power
+        }else{
+            calib_break_power_gauge
+        }
+        total_compression_pressure = if (compression_pressure_bool_calib!!){
+            api_compression_pressure
+        } else{
+            calib_comp_pres_gauge
+        }
+
+        total_rpm = if (rpm_bool_calib!!){
+            api_rpm
+        }else{
+            calib_engine_speed_gauge
+        }
+
+        total_exhaust_temperature = if(exshaust_temperature_bool_calib!!){
+            api_exhaust_temperature}
+        else{
+            calib_exhaust_gauge
+        }
+
+        total_firing_pressure = if (firing_pressure_bool_calib!!){
+            api_firing_pressure
+        }else{
+            calib_firing_pres_gauge
+        }
+
+        total_fuel_flow_rate = if (fuel_flow_rate_bool_calib!!){
+            api_fuel_flow_rate
+        }else{
+            calib_fuel_gauge
+        }
+
+        total_imep = if (imep_bool_calib!!){
+            api_imep
+        }else{
+            calib_imep_gauge
+        }
+
+        total_injection_timing = if (injection_timing_bool_calib!!){
+            api_injection_timing
+        } else {
+            calib_injec_gauge
+        }
+
+        total_load = if (load_bool_calib!!){
+            api_load
+        } else {
+            calib_load_gauge
+        }
+
+        total_scavenging_pressure = if (scavenging_pressure_bool_calib!!){
+            api_scavenging_pressure
+        } else{
+            calib_scave_gauge
+        }
+
+        torqueGauge?.speedTo(total_torque_engine!!)
+        bmepGauge?.speedTo(total_bmep!!)
+        breakGauge?.speedTo(total_break_power!!)
+        compPresGauge?.speedTo(total_compression_pressure!!)
+        rpmGauge?.speedTo(total_rpm!!)
+        exsahustGauge?.speedTo(total_exhaust_temperature!!)
+        firingGauge?.speedTo(total_firing_pressure!!)
+        fuelGauge?.speedTo(total_fuel_flow_rate!!)
+        imepGauge?.speedTo(total_imep!!)
+        injecGauge?.speedTo(total_injection_timing!!)
+        loadGauge?.speedTo(total_load!!)
+        scaveGauge?.speedTo(total_scavenging_pressure!!)
+    }
 
     override fun onClick(v: View?) {
 
         when(v!!.id){
             R.id.torque_gauge -> {
-                if(!(TextUtils.isEmpty(torque_engine.toString()))){
-                    var gauge = GaugeForCalibration()
+                if(!(TextUtils.isEmpty(total_torque_engine.toString()))){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "torque_gauge"
-                    gauge.value = torque_engine!!
+                    gauge.value = torqueGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
+//                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+
+//                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.exhaust_gauge -> {
-                if(!TextUtils.isEmpty(torque_engine.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_torque_engine.toString())){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "exhaust_gauge"
-                    gauge.value = exhaust_temperature!!
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    gauge.value = exsahustGauge!!.speed
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    savePropertiesToCalib(gauge)
+//                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.load_gauge -> {
-                if(!TextUtils.isEmpty(load.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_load.toString())){
+//                    var gauge = GaugeForCalibration()
 
                          gauge.name = "load_gauge"
-                         gauge.value = load!!
+                         gauge.value = loadGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.firing_pres_gauge -> {
-                if(!TextUtils.isEmpty(firing_pressure.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_firing_pressure.toString())){
+//                    var gauge = GaugeForCalibration()
 
                         gauge.name = "firing_pres_gauge"
-                        gauge.value = firing_pressure!!
+                        gauge.value = firingGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.comp_pres_gauge -> {
-                if(!TextUtils.isEmpty(compression_pressure.toString())){
+                if(!TextUtils.isEmpty(total_compression_pressure.toString())){
 
-                    var gauge = GaugeForCalibration()
+//                    var gauge = GaugeForCalibration()
                         gauge.name = "comp_pres_gauge"
-                        gauge.value = compression_pressure!!
+                        gauge.value = compPresGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.scave_gauge -> {
-                if(!TextUtils.isEmpty(scavenging_pressure.toString())){
+                if(!TextUtils.isEmpty(total_scavenging_pressure.toString())){
 
-                    var gauge = GaugeForCalibration()
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "scave_gauge"
-                    gauge.value = scavenging_pressure!!
+                    gauge.value = scaveGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.bmep_gauge -> {
-                if(!TextUtils.isEmpty(bmep.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_bmep.toString())){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "bmep_gauge"
-                    gauge.value = bmep!!
+                    gauge.value = bmepGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.break_power_gauge -> {
-                if(!TextUtils.isEmpty(break_power.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_break_power.toString())){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "break_power_gauge"
-                    gauge.value = break_power!!
+                    gauge.value = breakGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.engine_speed_gauge -> {
-                if(!TextUtils.isEmpty(engine_speed.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_rpm.toString())){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "engine_speed_gauge"
-                    gauge.value = engine_speed!!
+                    gauge.value = rpmGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.fuel_gauge -> {
-                if(!TextUtils.isEmpty(fuel_flow_rate.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_fuel_flow_rate.toString())){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "fuel_gauge"
-                    gauge.value = fuel_flow_rate!!
+                    gauge.value = fuelGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.imep_gauge -> {
-                if(!TextUtils.isEmpty(imep.toString())){
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_imep.toString())){
+//                    var gauge = GaugeForCalibration()
                     gauge.name = "imep_gauge"
-                    gauge.value = imep!!
+                    gauge.value = imepGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ,bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{
                     Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.injec_gauge -> {
-                if(!TextUtils.isEmpty(injection_timing.toString())) {
-                    var gauge = GaugeForCalibration()
+                if(!TextUtils.isEmpty(total_injection_timing.toString())) {
+//                    var gauge = GaugeForCalibration()
                     gauge.name ="injec_gauge"
-                    gauge.value = injection_timing!!
+                    gauge.value = injecGauge!!.speed
 
-                    val bundle = bundleOf("gauge_from_dashboard" to gauge)
+                    savePropertiesToCalib(gauge)
 
-                    findNavController().navigate(R.id.action_dashFragment_to_calibrationFragmentZ, bundle)
+                    findNavController().navigate(R.id.action_dashFragment_to_subDadhboardContainer)
                 }
                 else{ Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
                 }
@@ -594,13 +719,101 @@ class DashFragment : Fragment() ,View.OnClickListener{
             else ->{
                 Toast.makeText(this.context, "try Again", Toast.LENGTH_SHORT).show()
             }
+
+
         }
+
     }
 
     fun getAddress(){
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val defaultValue = resources.getString(R.string.default_ip)
         ip = sharedPref.getString("ip", defaultValue)
+    }
+
+    fun getShipPropreties(){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val defaultShipName = ""
+        val defaultValue = ""
+        currentShip.vessel = sharedPref.getString("nameOfCurrentShip",defaultShipName)
+        currentShip.m_e = sharedPref.getString("nameOfCurrentEngine", defaultValue)
+
+    }
+
+    fun getPropertiesFromCalib(){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val defaultName = gauge.name
+        val defaultValue = gauge.value
+        fromCalibName = sharedPref.getString("nameOfGaugeFromCalib",defaultName)
+        fromCalibValue = sharedPref.getFloat("valueFromCalib", defaultValue)
+
+        when (fromCalibName){
+            "torque_gauge"-> {
+                torque_engine_bool_calib = false
+                calib_torque_gauge = fromCalibValue
+            }
+            "load_gauge"-> {
+                load_bool_calib = false
+                calib_load_gauge = fromCalibValue
+            }
+            "firing_pres_gauge"-> {
+                firing_pressure_bool_calib = false
+                calib_firing_pres_gauge = fromCalibValue
+            }
+            "bmep_gauge"-> {
+                bmep_bool_calib = false
+                calib_bmep_gauge = fromCalibValue
+            }
+            "break_power_gauge"-> {
+                break_power_bool_calib = false
+                calib_break_power_gauge = fromCalibValue
+
+            }
+            "comp_pres_gauge"-> {
+                compression_pressure_bool_calib = false
+                calib_comp_pres_gauge = fromCalibValue
+            }
+            "engine_speed_gauge"-> {
+                rpm_bool_calib = false
+                calib_engine_speed_gauge = fromCalibValue
+            }
+            "exhaust_gauge"-> {
+                exshaust_temperature_bool_calib = false
+                calib_exhaust_gauge = fromCalibValue
+            }
+            "fuel_gauge"-> {
+                fuel_flow_rate_bool_calib = false
+                calib_fuel_gauge = fromCalibValue
+            }
+            "imep_gauge"-> {
+                imep_bool_calib = false
+                calib_imep_gauge = fromCalibValue
+                //TODO: update the unit
+            }
+            "injec_gauge"-> {
+                injection_timing_bool_calib = false
+                calib_injec_gauge = fromCalibValue
+            }
+            "scave_gauge"-> {
+                scavenging_pressure_bool_calib = false
+                calib_scave_gauge = fromCalibValue
+            }
+            else -> {
+                load_bool_calib = false
+                calib_load_gauge = fromCalibValue
+            }
+        }
+        setGauges()
+    }
+
+    fun savePropertiesToCalib(gaugeForCalibration: GaugeForCalibration){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString("nameOfGaugeFromdash", gaugeForCalibration.name)
+            putFloat("valueOfGaugeFromdash", gaugeForCalibration.value)
+            commit()
+        }
+
     }
 }
 

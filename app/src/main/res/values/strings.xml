@@ -83,6 +83,8 @@
     <string name="text_forgot_password">Forgot password</string>
     <string name="process_death_state">process_death_state</string>
     <string name="default_ip">http://office.occano.io:4000</string>
+
+    <string name="default_time_passed">true</string>
     <string name="default_log">log content</string>
     <string name="log">Log</string>
     <string name="status">Status</string>

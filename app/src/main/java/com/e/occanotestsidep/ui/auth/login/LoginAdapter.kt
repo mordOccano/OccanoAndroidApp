@@ -100,8 +100,8 @@ class LoginAdapter(private val interaction: Interaction? = null) :
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-            itemView.tv_rv_login_shipname.text = item.name
-            itemView.tv_rv_login_shipimo.text = item.imo
+            itemView.tv_rv_login_shipname.text = item.vessel
+            itemView.tv_rv_login_shipimo.text = item.IMO
         }
     }
 

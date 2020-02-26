@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "9885669f9d24e9a7415bfef458a9f06c",
+    "identityHash": "6847974994b07e53d3f0c06b9e17fc00",
     "entities": [
       {
         "tableName": "logs",
@@ -67,11 +67,76 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "comb_pres_details_for_graph",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `comb_pres_timestamp_graph` TEXT, `comb_pres_value_graph` REAL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeStamp",
+            "columnName": "comb_pres_timestamp_graph",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "comb_pres_value_graph",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "fuel_details_for_graph",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `fuel_timestamp_graph` TEXT, `fuel_value_graph` REAL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeStamp",
+            "columnName": "fuel_timestamp_graph",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "fuel_value_graph",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9885669f9d24e9a7415bfef458a9f06c\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6847974994b07e53d3f0c06b9e17fc00')"
     ]
   }
 }

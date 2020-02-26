@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".ui.main.dashboard.DashFragment">
+    tools:context=".ui.main.dashboard.DashFragment"
+    android:id="@+id/dashFragXml">
+
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -13,6 +15,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
@@ -46,67 +49,72 @@
                         android:orientation="horizontal"
                         android:padding="4dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_margin="1dp">
-
-                    <com.github.anastr.speedviewlib.AwesomeSpeedometer
-                        android:id="@+id/torque_gauge"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        app:sv_image="@drawable/for_image_speedometer"
-                        app:sv_indicator="HalfLineIndicator"
-                        app:sv_indicatorColor="#BF00BCD4"
-                        app:sv_indicatorWidth="4dp"
-                        app:sv_speedTextColor="#B2B9E2"
-                        app:sv_speedTextPadding="35dp"
-                        app:sv_speedometerColor="#5D6596"
-                        app:sv_speedometerWidth="20dp"
-                        app:sv_trianglesColor="#BEC0C7"
-                        app:sv_unitTextColor="#B0B8D8"
-                        app:sv_unit="KN/m"
-                        app:sv_unitUnderSpeedText="true" />
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_margin="1dp">
 
-                    <TextView
-                        android:id="@+id/tv_torque"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Torque"
-                        android:textColor="@color/colorText" />
 
-                    <com.github.anastr.speedviewlib.AwesomeSpeedometer
-                        android:id="@+id/scave_gauge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        app:sv_image="@drawable/for_image_speedometer"
-                        app:sv_trembleDegree="0.2"
-                        app:sv_unit="bar"
-                        app:sv_unitUnderSpeedText="true"
-                        app:sv_indicator="HalfLineIndicator"
-                        app:sv_indicatorColor="#BF00BCD4"
-                        app:sv_indicatorWidth="4dp"
-                        app:sv_speedTextColor="#B2B9E2"
-                        app:sv_speedTextPadding="35dp"
-                        app:sv_speedometerColor="#5D6596"
-                        app:sv_speedometerWidth="20dp"
-                        app:sv_trianglesColor="#BEC0C7"
-                        app:sv_unitTextColor="#B0B8D8"/>
+                            <com.github.anastr.speedviewlib.AwesomeSpeedometer
+                                android:id="@+id/torque_gauge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                app:sv_image="@drawable/for_image_speedometer"
+                                app:sv_indicator="HalfLineIndicator"
+                                app:sv_indicatorColor="#BF00BCD4"
+                                app:sv_indicatorWidth="4dp"
+                                app:sv_speedTextColor="#B2B9E2"
+                                app:sv_speedTextPadding="35dp"
+                                app:sv_speedometerColor="#5D6596"
+                                app:sv_speedometerWidth="20dp"
+                                app:sv_trianglesColor="#BEC0C7"
+                                app:sv_unitTextColor="#B0B8D8"
+                                app:sv_trembleDegree="2"
+                                app:sv_unit="KN/m"
+                                app:sv_unitUnderSpeedText="true" />
 
-                    <TextView
-                        android:id="@+id/tv_scave"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="scave"
-                        android:textColor="@color/colorText"
+                            <TextView
+                                android:id="@+id/tv_torque"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="Torque"
+                                android:textColor="@color/colorText" />
 
-                        />
+
+
+
+                        <com.github.anastr.speedviewlib.AwesomeSpeedometer
+                                android:id="@+id/scave_gauge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                app:sv_image="@drawable/for_image_speedometer"
+                                app:sv_trembleDegree="0.1"
+                                app:sv_unit="bar"
+                                app:sv_unitUnderSpeedText="true"
+                                app:sv_indicator="HalfLineIndicator"
+                                app:sv_indicatorColor="#BF00BCD4"
+                                app:sv_indicatorWidth="4dp"
+                                app:sv_speedTextColor="#B2B9E2"
+                                app:sv_speedTextPadding="35dp"
+                                app:sv_speedometerColor="#5D6596"
+                                app:sv_speedometerWidth="20dp"
+                                app:sv_trianglesColor="#BEC0C7"
+                                app:sv_unitTextColor="#B0B8D8"/>
+
+                            <TextView
+                                android:id="@+id/tv_scave"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="scave"
+                                android:textColor="@color/colorText"
+
+                                />
 
                 </LinearLayout>
 
@@ -117,13 +125,14 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1">
 
+
                     <com.github.anastr.speedviewlib.AwesomeSpeedometer
                         android:id="@+id/bmep_gauge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         app:sv_image="@drawable/for_image_speedometer"
-                        app:sv_trembleDegree="0.4"
+                        app:sv_trembleDegree="0.1"
                         app:sv_unit="bar"
                         app:sv_unitUnderSpeedText="true"
                         app:sv_indicator="HalfLineIndicator"
@@ -146,13 +155,15 @@
 
                         />
 
+
+
                     <com.github.anastr.speedviewlib.AwesomeSpeedometer
                         android:id="@+id/imep_gauge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         app:sv_image="@drawable/for_image_speedometer"
-                        app:sv_trembleDegree="0.4"
+                        app:sv_trembleDegree="0.1"
                         app:sv_unit=""
                         app:sv_unitUnderSpeedText="true"
                         app:sv_indicator="HalfLineIndicator"
@@ -199,13 +210,14 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
+
                         <com.github.anastr.speedviewlib.AwesomeSpeedometer
                             android:id="@+id/break_power_gauge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             app:sv_image="@drawable/for_image_speedometer"
-                            app:sv_trembleDegree="0.4"
+                            app:sv_trembleDegree="0.1"
                             app:sv_unit="kw"
                             app:sv_unitUnderSpeedText="true"
                             app:sv_indicator="HalfLineIndicator"
@@ -284,7 +296,7 @@
                             app:sv_speedometerWidth="20dp"
                             app:sv_trianglesColor="#BEC0C7"
                             app:sv_unitTextColor="#B0B8D8"
-                            app:sv_trembleDegree="0.2"/>
+                            app:sv_trembleDegree="0.1"/>
 
                         <TextView
                             android:id="@+id/tv_rpm"
@@ -294,13 +306,13 @@
                             android:text="RPM"
                             android:textColor="@color/colorText" />
 
-                        <com.github.anastr.speedviewlib.AwesomeSpeedometer
+                         <com.github.anastr.speedviewlib.AwesomeSpeedometer
                             android:id="@+id/injec_gauge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             app:sv_image="@drawable/for_image_speedometer"
-                            app:sv_trembleDegree="0.2"
+                            app:sv_trembleDegree="0.03"
                             app:sv_unit="bar"
                             app:sv_unitUnderSpeedText="true"
                             app:sv_indicator="HalfLineIndicator"
@@ -349,6 +361,8 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
+
+
                     <com.github.anastr.speedviewlib.AwesomeSpeedometer
                         android:id="@+id/exhaust_gauge"
                         android:layout_width="wrap_content"
@@ -360,6 +374,7 @@
                         app:sv_indicator="HalfLineIndicator"
                         app:sv_indicatorColor="#BF00BCD4"
                         app:sv_indicatorWidth="4dp"
+                        app:sv_trembleDegree="0.2"
                         app:sv_speedTextColor="#B2B9E2"
                         app:sv_speedTextPadding="35dp"
                         app:sv_speedometerColor="#5D6596"
@@ -385,6 +400,7 @@
                         android:layout_gravity="center_horizontal"
                         app:sv_image="@drawable/for_image_speedometer"
                         app:sv_unit="bar"
+                        app:sv_trembleDegree="0.2"
                         app:sv_unitUnderSpeedText="true"
                         app:sv_indicator="HalfLineIndicator"
                         app:sv_indicatorColor="#BF00BCD4"
@@ -416,7 +432,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
 
 
 
@@ -453,6 +468,7 @@
                         android:layout_gravity="center_horizontal"
                         app:sv_image="@drawable/for_image_speedometer"
                         app:sv_unit="%"
+                        app:sv_trembleDegree="0.2"
                         app:sv_unitUnderSpeedText="true"
                         app:sv_indicator="HalfLineIndicator"
                         app:sv_indicatorColor="#BF00BCD4"
@@ -504,13 +520,12 @@
             android:id="@+id/iv_engine_name"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/engine_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline13"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_ship_name"
@@ -519,17 +534,18 @@
             android:background="@drawable/ic_directions_boat_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_current_ship_name"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/iv_engine_name"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_current_ship_name"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="some ship"
+            android:ems="6"
             android:textColor="@color/colorText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline10"
@@ -537,7 +553,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_current_ship_engine"
+            android:id="@+id/tv_current_ship_reception"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:gravity="center"
@@ -558,7 +574,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+             />
 
         <ImageView
             android:id="@+id/iv_reception1"
@@ -569,7 +585,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+             />
 
         <ImageView
             android:id="@+id/iv_reception2"
@@ -580,7 +596,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+             />
 
         <ImageView
             android:id="@+id/iv_reception3"
@@ -591,7 +607,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            />
 
         <ImageView
             android:id="@+id/iv_reception4"
@@ -602,42 +618,35 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+             />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tv_current_ship_engine"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Man B-12"
-
-
+            android:ems="7"
             android:textColor="@color/colorText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_engine_name"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView3" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="139dp" />
+            app:layout_constraintGuide_percent="0.4" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.67396593" />
+            app:layout_constraintGuide_percent="0.60
+" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

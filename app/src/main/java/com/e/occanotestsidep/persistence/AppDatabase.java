@@ -10,8 +10,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.e.occanosidetest.models.GaugeForCalibration;
 import com.e.occanosidetest.models.Log;
+import com.e.occanotestsidep.persistence.Graph.daoGraph.CombPresDao;
+import com.e.occanotestsidep.persistence.Graph.daoGraph.FuelDao;
+import com.e.occanotestsidep.ui.models.CombPresForGraph;
+import com.e.occanotestsidep.ui.models.FuelForGraph;
 
-@Database(entities = {Log.class, GaugeForCalibration.class}, version = 2)
+@Database(entities = {Log.class, GaugeForCalibration.class, CombPresForGraph.class, FuelForGraph.class}, version = 4)
 public abstract class AppDatabase extends RoomDatabase {
 
 //    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -33,7 +37,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 
 
-    static AppDatabase getInstance(final Context context){
+    public static AppDatabase getInstance(final Context context){
         if(instance == null){
             instance = Room.databaseBuilder(
                     context.getApplicationContext(),
@@ -49,4 +53,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract LogDao getLogDao();
     public abstract GaugeCalibDao getGaugeCalibDao();
+    public abstract CombPresDao getCombPresDao();
+    public abstract FuelDao getFuelDao();
+
 }

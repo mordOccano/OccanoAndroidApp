@@ -53,6 +53,46 @@ class StaticAddress {
         var max_injec_gauge = 4f
         var max_load_gauge = 150f
         var max_scave_gauge = 10f
+
+
+        var calib_torque_gauge = 400f
+        var calib_bmep_gauge = 30f
+        var calib_break_power_gauge = 100000f
+        var calib_comp_pres_gauge = 300f
+        var calib_engine_speed_gauge = 100f
+        var calib_exhaust_gauge = 500f
+        var calib_firing_pres_gauge = 300f
+        var calib_fuel_gauge = 550f
+        var calib_imep_gauge = 30f
+        var calib_injec_gauge = 4f
+        var calib_load_gauge = 150f
+        var calib_scave_gauge = 10f
+
+        var rpm_bool_calib: Boolean? = true
+        var exshaust_temperature_bool_calib: Boolean? = true
+        var load_bool_calib: Boolean? = true
+        var firing_pressure_bool_calib: Boolean? = true
+        var scavenging_pressure_bool_calib: Boolean? = true
+        var compression_pressure_bool_calib: Boolean? = true
+        var break_power_bool_calib: Boolean? = true
+        var imep_bool_calib: Boolean? = true
+        var torque_engine_bool_calib: Boolean? = true
+        var bmep_bool_calib: Boolean? = true
+        var injection_timing_bool_calib: Boolean? = true
+        var fuel_flow_rate_bool_calib: Boolean? = true
+
+        var local_mics_recv_current: String = ""
+        var local_mics_recv_previous: String = ""
+        var local_ir_recv_current: String = ""
+        var local_ir_recv_tester_previous: String = ""
+
+        var bool_mics_recv: Boolean = true
+        var bool_ir_recv: Boolean = true
+
+        var counter_compare_to_local:Int = 0
+        var sec_bool_counter_compare_to_local:Boolean = false
+
+
     }
 
 }

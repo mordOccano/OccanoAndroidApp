@@ -17,13 +17,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:exitAnim="@anim/slide_out_left"/>
-        <action
-            android:id="@+id/action_launcherFragment_to_logFragment"
-            app:destination="@id/logFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
 
     </fragment>
     <fragment
@@ -34,13 +27,6 @@
         <action
             android:id="@+id/action_loginFragment_to_loadFragment"
             app:destination="@id/loadFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
-        <action
-            android:id="@+id/action_loginFragment_to_logFragment"
-            app:destination="@id/logFragment"
             app:enterAnim="@anim/slide_in_right"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
@@ -59,13 +45,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:exitAnim="@anim/slide_out_left"/>
-        <action
-            android:id="@+id/action_loadFragment_to_logFragment"
-            app:destination="@id/logFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
 
     </fragment>
     <fragment
@@ -80,13 +59,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:exitAnim="@anim/slide_out_left"/>
-        <action
-            android:id="@+id/action_settingsFragment_to_logFragment"
-            app:destination="@id/logFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
 
     </fragment>
     <fragment
@@ -96,18 +68,13 @@
         tools:layout="@layout/fragment_calibration_fragment_z" >
         <action
             android:id="@+id/action_calibrationFragmentZ_to_dashFragment"
-            app:destination="@id/dashFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
+            app:destination="@id/dashFragment" />
         <action
-            android:id="@+id/action_calibrationFragmentZ_to_logFragment"
-            app:destination="@id/logFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
+            android:id="@+id/action_calibrationFragmentZ_to_subDadhboardContainer"
+            app:destination="@id/subDadhboardContainer" />
+        <action
+            android:id="@+id/action_calibrationFragmentZ_to_dashFragment2"
+            app:destination="@id/dashFragment" />
 
     </fragment>
     <fragment
@@ -160,13 +127,6 @@
         android:label="fragment_dash"
         tools:layout="@layout/fragment_dash" >
         <action
-            android:id="@+id/action_dashFragment_to_calibrationFragmentZ"
-            app:destination="@id/calibrationFragmentZ"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_out_left"/>
-        <action
             android:id="@+id/action_dashFragment_to_statusFragment"
             app:destination="@id/statusFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -180,7 +140,45 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:exitAnim="@anim/slide_out_left"/>
+        <action
+            android:id="@+id/action_dashFragment_to_subDadhboardContainer"
+            app:destination="@id/subDadhboardContainer" />
+        <action
+            android:id="@+id/action_dashFragment_to_subDadhboardContainer2"
+            app:destination="@id/subDadhboardContainer" />
+        <action
+            android:id="@+id/action_dashFragment_to_calibrationFragmentZ"
+            app:destination="@id/calibrationFragmentZ" />
 
 
+    </fragment>
+    <fragment
+        android:id="@+id/cylindersFragment"
+        android:name="com.e.occanotestsidep.ui.main.dashboard.CylindersFragment"
+        android:label="fragment_cylinders"
+        tools:layout="@layout/fragment_cylinders" >
+        <action
+            android:id="@+id/action_cylindersFragment_to_dashFragment"
+            app:destination="@id/dashFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/graphsFragment"
+        android:name="com.e.occanotestsidep.ui.main.dashboard.GraphsFragment"
+        android:label="fragment_graphs"
+        tools:layout="@layout/fragment_graphs" >
+        <action
+            android:id="@+id/action_graphsFragment_to_dashFragment"
+            app:destination="@id/dashFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/subDadhboardContainer"
+        android:name="com.e.occanotestsidep.ui.main.dashboard.SubDadhboardContainer"
+        android:label="SubDadhboardContainer" >
+        <action
+            android:id="@+id/action_subDadhboardContainer_to_dashFragment"
+            app:destination="@id/dashFragment" />
+        <action
+            android:id="@+id/action_subDadhboardContainer_to_calibrationFragmentZ"
+            app:destination="@id/calibrationFragmentZ" />
     </fragment>
 </navigation>
